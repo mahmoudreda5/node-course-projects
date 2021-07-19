@@ -7,16 +7,16 @@ const forecast = (latitude, longitude, callback) => {
     const url = `http://api.weatherstack.com/current?access_key=${accessToken}&query=${query}`;
     
     request({
-        url: url,
+        url,
         json: true
-    }, (error, response) => {
+    }, (error, { body } = {}) => {
         let err = undefined, data = undefined;
         if(error) {
             err = 'unable to connect to weather service.';
-        } else if(response.body.error) {
-            err = response.body.error.info;
+        } else if(body.error) {
+            err = body.error.info;
         } else {
-            data = response.body.current.temperature;
+            data = body.current.temperature;
         }
         callback(err, data);
     });
