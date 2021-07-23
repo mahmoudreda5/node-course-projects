@@ -44,11 +44,19 @@ app.get('/weather', (req, res) => {
 });
 
 app.get('/help/*', (req, res) => {
-    return res.render('404', {error: 'help article not found'});
+    return res.render('404', {
+        error: 'help article not found',
+        title: '404',
+        name: 'mahmoud reda'
+    });
 });
 
 app.get('*', (req, res) => {
-    return res.render('404', {error: 'page not found'});
+    return res.render('404', {
+        error: 'page not found',
+        title: '404',
+        name: 'mahmoud reda'
+    });
 });
 
 app.listen(3000, () => {
