@@ -19,6 +19,31 @@ MongoClient.connect(
         }
 
         const db = client.db(databaseName);
+
+        // delete
+        // db.collection('users').deleteOne({
+        //     _id: new ObjectId('60fdbddce340a132c1912f1f')
+        // }).then((result) => {
+        //     console.log(result);
+        // }).catch((error) => {
+        //     console.log(error);
+        // });
+
+        // uodate
+        // db.collection('users').updateOne({
+        //     _id: new ObjectId('60fdbddce340a132c1912f1f')
+        // }, {
+        //     $inc: {
+        //         age: 1
+        //     }
+        // })
+        // .then((result) => {
+        //     console.log(result);
+        // }).catch((error) => {
+        //     console.log(error);
+        // });
+
+        // read
         // db.collection('users').findOne({_id: new ObjectId('60fdbddce340a132c1912f1f')}, (error, user) => {
         //     if(error) {
         //         return console.log('unable to fetch');
@@ -31,6 +56,7 @@ MongoClient.connect(
         //     console.log(tasks);
         // });
 
+        // create
         // db.collection('users').insertOne({
         //     _id,
         //     name: 'wla wla',
