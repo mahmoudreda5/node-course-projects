@@ -105,6 +105,20 @@ app.patch('/users/:id', async (req, res) => {
     }
 });
 
+app.delete('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const user = await User.findByIdAndDelete(id);
+        if(!user) {
+            return res.status(404).send('User not found');
+        }
+
+        return res.send(user);
+    } catch(e) {
+        return res.status(500).send(e);
+    }
+});
+
 app.get('/tasks', async (req, res) => {
     try {
         const tasks = await Task.find();
@@ -163,6 +177,20 @@ app.patch('/tasks/:id', async (req, res) => {
         return res.send(task);
     } catch (e) {
         return res.status(400).send(e)
+    }
+});
+
+app.delete('/tasks/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const task = await Task.findByIdAndDelete(id);
+        if(!task) {
+            return res.status(404).send('Task not found');
+        }
+
+        return res.send(task);
+    } catch (e) {
+        return res.status(500).send(e);
     }
 });
 
