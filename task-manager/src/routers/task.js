@@ -7,8 +7,8 @@ const Task = require('../models/task');
 taskRouter.post('/tasks', async (req, res) => {
     const task = new Task(req.body);
     try {
-        const task = await task.save();
-        return res.status(201).send(user);
+        await task.save();
+        return res.status(201).send(task);
     } catch(e) {
         return res.status(400).send(e);
     }
