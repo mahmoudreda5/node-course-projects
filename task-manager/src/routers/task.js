@@ -2,10 +2,16 @@ const express = require('express');
 const taskRouter = express.Router();
 
 const Task = require('../models/task');
+const auth = require('../middleware/auth');
+const { findOne } = require('../models/user');
 
 
-taskRouter.post('/tasks', async (req, res) => {
-    const task = new Task(req.body);
+taskRouter.post('/tasks', auth, async (req, res) => {
+    // const task = new Task(req.body);
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
+    });
     try {
         await task.save();
         return res.status(201).send(task);
@@ -14,19 +20,24 @@ taskRouter.post('/tasks', async (req, res) => {
     }
 })
 
-taskRouter.get('/tasks', async (req, res) => {
+taskRouter.get('/tasks', auth, async (req, res) => {
+    // const owner = req.user._id;
     try {
-        const tasks = await Task.find();
-        return res.send(tasks);
+        // const tasks = await Task.find({ owner });
+        const user = req.user;
+        await user.populate('tasks').execPopulate();
+        return res.send(user.tasks);
     } catch(e) {
         return res.status(500).send(e);
     }
 });
 
-taskRouter.get('/tasks/:id', async (req, res) => {
+taskRouter.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id;
+    const owner = req.user._id;
     try {
-        const task = await Task.findById(_id);
+        // const task = await Task.findById(_id);
+        const task = await Task.findOne({ _id, owner });
         if(!task) {
             return res.status(404).send('Task not found!');
         }
@@ -36,7 +47,7 @@ taskRouter.get('/tasks/:id', async (req, res) => {
     }
 });
 
-taskRouter.patch('/tasks/:id', async (req, res) => {
+taskRouter.patch('/tasks/:id', auth, async (req, res) => {
     const allowedUpdates = ['description', 'completed'];
     const updates = Object.keys(req.body);
     const isUpdateValid = updates.every(item => {
@@ -46,14 +57,16 @@ taskRouter.patch('/tasks/:id', async (req, res) => {
         return res.status(400).send('Invalid updates');
     }
 
-    const id = req.params.id;
+    // const id = req.params.id;
+    const _id = req.params.id;
+    const owner = req.user._id;
     try {
         // const task = await Task.findByIdAndUpdate(id, req.body, {
         //     new: true,
         //     runValidators: true
         // });
-        const task = await Task.findById(req.params.id);
-        console.log(task);
+        // const task = await Task.findById(id);
+        const task = await Task.findOne({ _id, owner });
         if(!task) {
             return res.status(404).send('Task not found');
         }
@@ -66,10 +79,13 @@ taskRouter.patch('/tasks/:id', async (req, res) => {
     }
 });
 
-taskRouter.delete('/tasks/:id', async (req, res) => {
-    const id = req.params.id;
+taskRouter.delete('/tasks/:id', auth, async (req, res) => {
+    // const id = req.params.id;
+    const _id = req.params.id;
+    const owner = req.user._id;
     try {
-        const task = await Task.findByIdAndDelete(id);
+        // const task = await Task.findByIdAndDelete(id);
+        const task = await Task.findOneAndDelete({ _id, owner });
         if(!task) {
             return res.status(404).send('Task not found');
         }
