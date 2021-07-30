@@ -29,6 +29,30 @@ router.post('/users/login', async (req, res) => {
     }
 });
 
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        const user = req.user;
+        user.tokens = user.tokens.filter(token => {
+            return token.token !== req.token;
+        });
+        await user.save();
+        return res.send(user);
+    } catch (e) {
+        return res.status(500).send(e);
+    }
+});
+
+router.post('/users/logout-all', auth, async (req, res) => {
+    try {
+        const user = req.user;
+        user.tokens = [];
+        await user.save();
+        return res.send(user);
+    } catch (e) {
+        return res.status(500).send(e);
+    }
+});
+
 router.get('/users/me', auth, async (req, res) => {
     return res.send(req.user);
 });
