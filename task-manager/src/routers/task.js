@@ -3,7 +3,6 @@ const taskRouter = express.Router();
 
 const Task = require('../models/task');
 const auth = require('../middleware/auth');
-const { findOne } = require('../models/user');
 
 
 taskRouter.post('/tasks', auth, async (req, res) => {
